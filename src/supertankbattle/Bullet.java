@@ -29,10 +29,11 @@ public class Bullet {
     
     //Metodos
     public void draw(Graphics g){
-        g.drawOval(posx, posy, RADIUS, RADIUS);
+        g.setColor(color);
+        g.fillOval(posx, posy, RADIUS-5, RADIUS);
     }
     
-    public void travel(int direction, int bound,Graphics g) {
+    public void travel(int direction, Graphics g) {
         switch (direction){
             case 0:
                 distx=0;
@@ -51,13 +52,10 @@ public class Bullet {
                 disty=0;
                 break;
         }
-        Thread move = new Thread(){
-            public void Run(){
-                posx=posx+distx;
-                posy=posy+disty;
-                draw(g);
-            }
-        };
+        posx=posx+distx;
+        posy=posy+disty;
+        draw(g);
+        
     }
     //getters y setters
 
@@ -66,7 +64,7 @@ public class Bullet {
     }
 
     public void setPosx(int posx) {
-        this.posx = posx;
+        this.posx = posx-2;
     }
 
     public int getPosy() {
@@ -74,7 +72,7 @@ public class Bullet {
     }
 
     public void setPosy(int posy) {
-        this.posy = posy;
+        this.posy = posy-6;
     }
     
 }

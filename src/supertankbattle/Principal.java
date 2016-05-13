@@ -19,6 +19,7 @@ public class Principal extends javax.swing.JFrame {
     private Recursos rec;
     final private int ventanaAncho = 800;
     final private int ventanaAlto = 640;
+    final private int FPS = 120;
     /**
      * Creates new form Menu
      */
@@ -30,8 +31,8 @@ public class Principal extends javax.swing.JFrame {
         ventanaMenu.setFocusable(true);
         try{
         rec = new Recursos();
-        jugador = new Tank(0,this.getWidth()/2,this.getHeight()/2,0,rec.getImg_tanques()[0][0]);
-        setGame();
+        jugador = new Tank(2,this.getWidth()/2,this.getHeight()/2,0,rec.getImg_tanques()[2][0]);
+        drawTanks();
         }
         catch(Exception ex)
         {
@@ -42,7 +43,7 @@ public class Principal extends javax.swing.JFrame {
         
     }
     
-    public void setGame() throws IOException
+    public void drawTanks() throws IOException
     {
         Thread game = new Thread(){
         @Override
@@ -52,11 +53,12 @@ public class Principal extends javax.swing.JFrame {
                g = ventanaMenu.getGraphics();
                jugador.draw(g);
                
-               // Refresh the display
+               //update
+               ventanaMenu.repaint();
                
                // Delay and give other thread a chance
                try {
-                  Thread.sleep(1000 / 120);
+                  Thread.sleep(1000/FPS);
                } catch (InterruptedException ex) {
                    JOptionPane.showMessageDialog(rootPane, "Ocurrio un error de tipo: "+ex.getMessage(), "Error",JOptionPane.ERROR_MESSAGE);
                }
@@ -137,11 +139,11 @@ public class Principal extends javax.swing.JFrame {
                     jugador.move_down(ventanaAlto);
                     break;
                 case java.awt.event.KeyEvent.VK_SPACE:
-                    jugador.shoot(jugador.getDirection(),ventanaMenu.getGraphics());
+                    jugador.shoot(ventanaMenu.getGraphics());
                     break;
             }
             jugador.setImage(rec.getImg_tanques()[jugador.getTipo()][jugador.getDirection()]);
-            ventanaMenu.repaint();
+            
         }
         catch(Exception ex)
         {
