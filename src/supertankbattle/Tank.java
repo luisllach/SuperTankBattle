@@ -46,7 +46,10 @@ public class Tank {
     
     public void draw(Graphics g)
     {
-        g.drawImage(image, posx, posy,null);  
+        g.drawImage(image, posx, posy,null);
+        for (int i = 0; i < shots_fired; i++) {
+            balas[i].draw(g);
+        }
     }
     
     public void move_up(int ubound) throws IOException
@@ -84,11 +87,11 @@ public class Tank {
         }
     }
     
-    public void shoot(int bound, Graphics g)
+    public void shoot(Graphics g)
     {
         if(shots_fired<=MAX_BULLETS){
             shots_fired=shots_fired+1;
-            balas[shots_fired-1].travel(direction, bound,g);
+            balas[shots_fired-1].travel(direction,g);
         }
     }
     
