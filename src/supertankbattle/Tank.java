@@ -27,6 +27,7 @@ public class Tank {
     final private int dist=3;
     private final int MAX_BULLETS=5;
     private int shots_fired;
+    private int previous_direction;
     //private Graphics2D g2d;
 
     
@@ -39,6 +40,7 @@ public class Tank {
         this.direction=direction;
         this.image=image;
         this.shots_fired=0;
+        this.previous_direction=0;
         setBalas(MAX_BULLETS);
     }
     
@@ -46,14 +48,17 @@ public class Tank {
     
     public void draw(Graphics g)
     {
+        
         g.drawImage(image, posx, posy,null);
         for (int i = 0; i < shots_fired; i++) {
             balas[i].draw(g);
         }
+        
     }
     
     public void move_up(int ubound) throws IOException
     {
+        previous_direction=direction;
         direction=0;
         if(posy-dist>ubound)
         {
@@ -62,6 +67,7 @@ public class Tank {
     }
     public void move_down(int dbound) throws IOException
     {
+        previous_direction=direction;
         direction=1;
         if(posy+image.getHeight()+dist<dbound)
         {
@@ -71,6 +77,7 @@ public class Tank {
     }
     public void move_left(int lfbound) throws IOException
     {
+        previous_direction=direction;
         direction=2;
         if(posx-dist>lfbound)
         {
@@ -80,6 +87,7 @@ public class Tank {
     }
     public void move_right(int rbound) throws IOException
     {
+        previous_direction=direction;
         direction=3;
         if(posx+image.getWidth()+dist<rbound)
         {
@@ -93,6 +101,10 @@ public class Tank {
             shots_fired=shots_fired+1;
             balas[shots_fired-1].travel(direction,g);
         }
+    }
+    
+    public boolean directionChanged(){ 
+        return (direction != previous_direction);
     }
     
     //Getters y setters
@@ -164,6 +176,10 @@ public class Tank {
 
     public void setShots_fired(int shots_fired) {
         this.shots_fired = shots_fired;
+    }
+
+    public int getPrevious_direction() {
+        return previous_direction;
     }
     
     

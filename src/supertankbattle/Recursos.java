@@ -14,7 +14,7 @@ import javax.imageio.ImageIO;
 public class Recursos {
     
     //Atributos
-    final private String PATH_TANK="Imagenes/Tanques/Tank";
+    final private String PATH_TANK="Imagenes/Tanques/tank";
     final private String EXT=".png";
     private final BufferedImage[][] img_tanques;
     
