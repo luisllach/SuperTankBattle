@@ -79,6 +79,24 @@ public class Game extends JFrame implements Runnable {
                         case KeyEvent.VK_RIGHT:
                             jugador.move_right(anchoVentana);
                             break;
+                        case KeyEvent.VK_SPACE:
+                            if(jugador.canShoot()){
+                                switch(jugador.direction){
+                                    case 0:
+                                        jugador.shoot(0);
+                                        break;
+                                    case 1:
+                                        jugador.shoot(altoVentana);
+                                        break;
+                                    case 2:
+                                        jugador.shoot(0);
+                                        break;
+                                    case 3:
+                                        jugador.shoot(anchoVentana);
+                                        break;
+                                }
+                            }
+                            break;
                     }
                     if(jugador.directionChanged())
                     {

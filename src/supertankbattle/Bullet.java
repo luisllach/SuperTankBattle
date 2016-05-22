@@ -9,53 +9,93 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 public class Bullet {
-    
+
     //Atributos
     public int posx;
     public int posy;
-    private final int RADIUS=10;
+    public int direction;
+    private final int RADIUS = 10;
     private int distx;
     private int disty;
+    public boolean traveling;
     private final Color color = Color.YELLOW;
-    
-    
+    private final int dist = 2;
+    private int bound;
+
     //Constructor
-    
-    public Bullet(){
-        this.distx=0;
-        this.disty=0;
-        
+    public Bullet(int posx, int posy, int bound) {
+        this.posx = posx;
+        this.posy = posy;
+        this.distx = 0;
+        this.disty = 0;
+        this.direction = -1;
+        this.traveling = false;
+        this.bound = bound;
     }
-    
+
     //Metodos
-    public void draw(Graphics g){
+    public void draw(Graphics g) {
         g.setColor(color);
-        g.fillOval(posx, posy, RADIUS-5, RADIUS);
+        g.fillOval(posx, posy, RADIUS - 5, RADIUS);
     }
-    
-    public void travel(int direction, Graphics g) {
-        switch (direction){
+
+    public void reset() {
+        setPosx(0);
+        setPosy(0);
+        direction = -1;
+        bound = -1;
+    }
+
+    public void travel(Graphics g) {
+        switch (direction) {
             case 0:
-                distx=0;
-                disty=-1;
+                distx = 0;
+                disty = -dist;
                 break;
             case 1:
-                distx=0;
-                disty=1;
+                distx = 0;
+                disty = dist;
                 break;
             case 2:
-                distx=-1;
-                disty=0;
+                distx = -dist;
+                disty = 0;
                 break;
             case 3:
-                distx=1;
-                disty=0;
+                distx = dist;
+                disty = 0;
                 break;
         }
-        posx=posx+distx;
-        posy=posy+disty;
+        posx = posx + distx;
+        posy = posy + disty;
+        switch(direction){
+            case 0:
+                if(posy<bound){
+                    traveling=false;
+                    reset();
+                }
+                break;
+            case 1:
+                if(posy>bound){
+                   traveling=false;
+                   reset(); 
+                }
+                break;
+            case 2:
+                if(posx<bound){
+                    traveling=false;
+                    reset();
+                }
+                break;
+            case 3:
+                if(posx>bound){
+                    traveling=false;
+                    reset();
+                }
+                break;
+        }
         draw(g);
-        
+
+
     }
     //getters y setters
 
@@ -64,7 +104,7 @@ public class Bullet {
     }
 
     public void setPosx(int posx) {
-        this.posx = posx-2;
+        this.posx = posx;
     }
 
     public int getPosy() {
@@ -72,7 +112,23 @@ public class Bullet {
     }
 
     public void setPosy(int posy) {
-        this.posy = posy-6;
+        this.posy = posy;
     }
-    
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
+
+    public int getBound() {
+        return bound;
+    }
+
+    public void setBound(int bound) {
+        this.bound = bound;
+    }
+
 }
