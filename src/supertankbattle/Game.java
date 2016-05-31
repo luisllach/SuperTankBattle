@@ -11,9 +11,12 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -26,20 +29,33 @@ public class Game extends JFrame implements Runnable {
     private Recursos rec;
     private Image dbImage;
     private Graphics dbg;
+    private Map mapa;
     private final int anchoVentana = 800;
-    private final int altoVentana = 600;
+    private final int altoVentana = 630;
+    private final int upperOffset = 25;
+    private final int rightOffset = 200;
+    private final int downBound = altoVentana;
+    private final int rightBound = anchoVentana - rightOffset;
+    private final int leftBound = 0;
+    private final int upBound = upperOffset;
     private final int FPS = 120;
+    private boolean gameStarted;
+    private boolean gamePaused;
+    private boolean gameInstructions;
 
     //Constructor
     public Game() {
         initComponents();
         addListeners();
+        gameStarted = false;
         try {
             rec = new Recursos();
-            jugador = new Tank(0, anchoVentana / 2, altoVentana / 2, 0, rec.getImg_tanques()[0][0]);
+            mapa = new Map();
+            mapa.setMapa(1, rec.getImg_bloques());
+            jugador = new Tank(0, 175, 575, 0, rec.getImg_tanques()[0][0]);
 
         } catch (Exception ex) {
-
+            JOptionPane.showMessageDialog(rootPane, ex.getMessage());
         }
 
     }
@@ -66,40 +82,44 @@ public class Game extends JFrame implements Runnable {
             @Override
             public void keyPressed(KeyEvent e) {
                 try {
-                    switch (e.getKeyCode()) {
-                        case KeyEvent.VK_UP:
-                            jugador.move_up(0);
-                            break;
-                        case KeyEvent.VK_DOWN:
-                            jugador.move_down(altoVentana);
-                            break;
-                        case KeyEvent.VK_LEFT:
-                            jugador.move_left(0);
-                            break;
-                        case KeyEvent.VK_RIGHT:
-                            jugador.move_right(anchoVentana);
-                            break;
-                        case KeyEvent.VK_SPACE:
-                            if(jugador.canShoot()){
-                                switch(jugador.direction){
-                                    case 0:
-                                        jugador.shoot(0);
-                                        break;
-                                    case 1:
-                                        jugador.shoot(altoVentana);
-                                        break;
-                                    case 2:
-                                        jugador.shoot(0);
-                                        break;
-                                    case 3:
-                                        jugador.shoot(anchoVentana);
-                                        break;
-                                }
-                            }
-                            break;
+                    if (e.getKeyCode() == KeyEvent.VK_UP && gameStarted) {
+                        jugador.move_up(upBound);
                     }
-                    if(jugador.directionChanged())
-                    {
+                    if (e.getKeyCode() == KeyEvent.VK_DOWN && gameStarted) {
+                        jugador.move_down(downBound);
+                    }
+                    if (e.getKeyCode() == KeyEvent.VK_LEFT && gameStarted) {
+                        jugador.move_left(leftBound);
+                    }
+                    if (e.getKeyCode() == KeyEvent.VK_RIGHT && gameStarted) {
+                        jugador.move_right(rightBound);
+                    }
+                    if (e.getKeyCode() == KeyEvent.VK_P && gameStarted) {
+                        if (gamePaused) {
+                            gamePaused = false;
+                        } else {
+                            gamePaused = true;
+                        }
+                    }
+                    if (e.getKeyCode() == KeyEvent.VK_SPACE && gameStarted) {
+                        if (jugador.canShoot()) {
+                            switch (jugador.direction) {
+                                case 0:
+                                    jugador.shoot(upBound);
+                                    break;
+                                case 1:
+                                    jugador.shoot(downBound);
+                                    break;
+                                case 2:
+                                    jugador.shoot(leftBound);
+                                    break;
+                                case 3:
+                                    jugador.shoot(rightBound);
+                                    break;
+                            }
+                        }
+                    }
+                    if (jugador.directionChanged()) {
                         jugador.setImage(rec.getImg_tanques()[jugador.getTipo()][jugador.getDirection()]);
                     }
                 } catch (Exception ex) {
@@ -109,6 +129,44 @@ public class Game extends JFrame implements Runnable {
 
             @Override
             public void keyReleased(KeyEvent e) {
+
+            }
+        });
+
+        this.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                if (gameStarted) {
+
+                } else if (!gameInstructions) {
+                    //Iniciar el juego
+                    if (e.getX() >= 250 && e.getX() <= 550 && e.getY() >= 200 && e.getY() <= 275) {
+                        gameStarted = true;
+                        //Ver instrucciones
+                    } else if (e.getX() >= 250 && e.getX() <= 550 && e.getY() >= 300 && e.getY() <= 375) {
+                        gameInstructions = true;
+                    }
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
 
             }
         });
@@ -130,13 +188,38 @@ public class Game extends JFrame implements Runnable {
     public void run() {
         try {
             while (true) {
-                Graphics g = this.getGraphics();
-                dbImage = this.createImage(anchoVentana, altoVentana);
-                dbg = dbImage.getGraphics();
-                paintComponent(dbg);
-                jugador.draw(dbg);
-                
-                g.drawImage(dbImage, 0, 0, this);
+                if (gameStarted) {
+                    //Inicia el juego
+                    Graphics g = this.getGraphics();
+                    dbImage = this.createImage(anchoVentana, altoVentana);
+                    dbg = dbImage.getGraphics();
+
+                    paintComponent(dbg);
+                    jugador.draw(dbg);
+                    dbg.drawImage(rec.getImg_fondos()[1], 600, upBound, null);
+                    mapa.draw(dbg);
+
+                    g.drawImage(dbImage, 0, 0, this);
+                } else //Menu principal
+                 if (!gameInstructions) {
+                        Graphics g = this.getGraphics();
+                        dbImage = this.createImage(anchoVentana, altoVentana);
+                        dbg = dbImage.getGraphics();
+                        //paintComponent(dbg);
+                        dbg.drawImage(rec.getImg_fondos()[0], 0, upBound, null);
+                        dbg.drawImage(rec.getImg_menus()[0], 250, 200, null);
+                        dbg.drawImage(rec.getImg_menus()[1], 250, 300, null);
+
+                        g.drawImage(dbImage, 0, 0, this);
+                    } else {
+                        //Instrucciones
+                        Graphics g = this.getGraphics();
+                        dbImage = this.createImage(anchoVentana, altoVentana);
+                        dbg = dbImage.getGraphics();
+
+                        g.drawImage(dbImage, 0, 0, this);
+                    }
+
                 Thread.sleep(1000 / FPS);
             }
         } catch (Exception ex) {
