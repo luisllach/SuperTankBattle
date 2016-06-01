@@ -14,11 +14,13 @@ public class Block {
     private int posx;
     private int posy;
     private BufferedImage image;
+    private int tipo;
     
     //Constructor
-    public Block(int posx, int posy, BufferedImage image){
+    public Block(int posx, int posy,int tipo ,BufferedImage image){
         this.posx = posx;
         this.posy = posy;
+        this.tipo=tipo;
         this.image = image;
         
     }
@@ -49,6 +51,14 @@ public class Block {
 
     public void setImage(BufferedImage image) {
         this.image = image;
+    }
+
+    public int getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
     }
     
     

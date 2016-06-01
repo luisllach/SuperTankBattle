@@ -50,7 +50,7 @@ public class Bullet {
         bound = -1;
     }
 
-    public void travel(Graphics g) {
+    public void travel() {
         switch (direction) {
             case 0:
                 distx = 0;
@@ -97,7 +97,6 @@ public class Bullet {
                 }
                 break;
         }
-        draw(g);
 
     }
     //getters y setters
@@ -133,5 +132,17 @@ public class Bullet {
     public void setBound(int bound) {
         this.bound = bound;
     }
+
+    public int getDist() {
+        return dist;
+    }
+
+    public int getRADIUS() {
+        return RADIUS;
+    }
+
+    
+    
+    
 
 }

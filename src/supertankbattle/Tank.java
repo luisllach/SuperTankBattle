@@ -25,7 +25,7 @@ public class Tank {
     public int posx;
     public int posy;
     public Bullet[] balas;
-    final private int dist = 3;
+    private final int dist = 1;
     private final int MAX_BULLETS = 1;
     private int previous_direction;
     private int bullet_offsetX;
@@ -58,11 +58,6 @@ public class Tank {
     public void draw(Graphics g) {
 
         g.drawImage(image, posx, posy, null);
-        for (int i = 0; i < MAX_BULLETS; i++) {
-            if (balas[i].traveling) {
-                balas[i].travel(g);
-            }
-        }
 
     }
 
@@ -113,14 +108,14 @@ public class Tank {
                         break;
                     case 1:
                         balas[i].setPosx(posx + (image.getWidth() / 2) - bullet_offsetX);
-                        balas[i].setPosy(posy + image.getHeight());
+                        balas[i].setPosy(posy + image.getHeight()-balas[i].getRADIUS());
                         break;
                     case 2:
                         balas[i].setPosx(posx);
                         balas[i].setPosy(posy + (image.getHeight() / 2) - bullet_offsetY);
                         break;
                     case 3:
-                        balas[i].setPosx(posx + image.getWidth());
+                        balas[i].setPosx(posx + image.getWidth()-balas[i].getRADIUS());
                         balas[i].setPosy(posy + (image.getHeight() / 2) - bullet_offsetY);
                         break;
                 }
@@ -240,6 +235,16 @@ public class Tank {
 
         }
     }
+
+    public int getDist() {
+        return dist;
+    }
+
+    public int getMAX_BULLETS() {
+        return MAX_BULLETS;
+    }
+    
+    
     
     
 
