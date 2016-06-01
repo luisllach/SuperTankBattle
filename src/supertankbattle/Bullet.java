@@ -19,7 +19,7 @@ public class Bullet {
     private int disty;
     public boolean traveling;
     private final Color color = Color.YELLOW;
-    private final int dist = 2;
+    private final int dist = 3;
     private int bound;
 
     //Constructor
@@ -36,7 +36,11 @@ public class Bullet {
     //Metodos
     public void draw(Graphics g) {
         g.setColor(color);
-        g.fillOval(posx, posy, RADIUS - 5, RADIUS);
+        if (direction == 0 || direction == 1) {
+            g.fillOval(posx, posy, RADIUS - 5, RADIUS);
+        } else if (direction == 2 || direction == 3) {
+            g.fillOval(posx, posy, RADIUS, RADIUS - 5);
+        }
     }
 
     public void reset() {
@@ -46,7 +50,7 @@ public class Bullet {
         bound = -1;
     }
 
-    public void travel(Graphics g) {
+    public void travel() {
         switch (direction) {
             case 0:
                 distx = 0;
@@ -67,34 +71,32 @@ public class Bullet {
         }
         posx = posx + distx;
         posy = posy + disty;
-        switch(direction){
+        switch (direction) {
             case 0:
-                if(posy<bound){
-                    traveling=false;
+                if (posy < bound) {
+                    traveling = false;
                     reset();
                 }
                 break;
             case 1:
-                if(posy>bound){
-                   traveling=false;
-                   reset(); 
+                if (posy > bound) {
+                    traveling = false;
+                    reset();
                 }
                 break;
             case 2:
-                if(posx<bound){
-                    traveling=false;
+                if (posx < bound) {
+                    traveling = false;
                     reset();
                 }
                 break;
             case 3:
-                if(posx>bound){
-                    traveling=false;
+                if (posx > bound) {
+                    traveling = false;
                     reset();
                 }
                 break;
         }
-        draw(g);
-
 
     }
     //getters y setters
@@ -130,5 +132,17 @@ public class Bullet {
     public void setBound(int bound) {
         this.bound = bound;
     }
+
+    public int getDist() {
+        return dist;
+    }
+
+    public int getRADIUS() {
+        return RADIUS;
+    }
+
+    
+    
+    
 
 }

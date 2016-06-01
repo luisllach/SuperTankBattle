@@ -25,9 +25,11 @@ public class Tank {
     public int posx;
     public int posy;
     public Bullet[] balas;
-    final private int dist = 3;
-    private final int MAX_BULLETS = 5;
+    private final int dist = 1;
+    private final int MAX_BULLETS = 1;
     private int previous_direction;
+    private int bullet_offsetX;
+    private int bullet_offsetY;
     //private Graphics2D g2d;
 
     //Constructor
@@ -38,6 +40,8 @@ public class Tank {
         this.direction = direction;
         this.image = image;
         this.previous_direction = 0;
+        setBullet_offsetX(direction);
+        setBullet_offsetY(direction);
         setBalas(MAX_BULLETS);
     }
 
@@ -54,11 +58,6 @@ public class Tank {
     public void draw(Graphics g) {
 
         g.drawImage(image, posx, posy, null);
-        for (int i = 0; i < MAX_BULLETS; i++) {
-            if (balas[i].traveling) {
-                balas[i].travel(g);
-            }
-        }
 
     }
 
@@ -101,23 +100,23 @@ public class Tank {
             if (!balas[i].traveling) {
                 balas[i].setDirection(direction);
                 balas[i].setBound(bound);
-                
+
                 switch (direction) {
                     case 0:
-                        balas[i].setPosx(posx + image.getWidth() / 2);
+                        balas[i].setPosx(posx + (image.getWidth() / 2) - bullet_offsetX);
                         balas[i].setPosy(posy);
                         break;
                     case 1:
-                        balas[i].setPosx(posx + image.getWidth() / 2);
-                        balas[i].setPosy(posy + image.getHeight());
+                        balas[i].setPosx(posx + (image.getWidth() / 2) - bullet_offsetX);
+                        balas[i].setPosy(posy + image.getHeight()-balas[i].getRADIUS());
                         break;
                     case 2:
                         balas[i].setPosx(posx);
-                        balas[i].setPosy(posy + image.getHeight() / 2);
+                        balas[i].setPosy(posy + (image.getHeight() / 2) - bullet_offsetY);
                         break;
                     case 3:
-                        balas[i].setPosx(posx + image.getWidth());
-                        balas[i].setPosy(posy + image.getHeight() / 2);
+                        balas[i].setPosx(posx + image.getWidth()-balas[i].getRADIUS());
+                        balas[i].setPosy(posy + (image.getHeight() / 2) - bullet_offsetY);
                         break;
                 }
                 balas[i].traveling = true;
@@ -129,6 +128,10 @@ public class Tank {
 
     public boolean directionChanged() {
         return (direction != previous_direction);
+    }
+    
+    public void AI(){
+        
     }
 
     //Getters y setters
@@ -187,12 +190,62 @@ public class Tank {
     public void setBalas(int cantidad) {
         this.balas = new Bullet[cantidad];
         for (int i = 0; i < cantidad; i++) {
-            this.balas[i] = new Bullet(posx + image.getWidth() / 2, posy, -1);
+            this.balas[i] = new Bullet(posx + (image.getWidth() / 2)-bullet_offsetX, posy, -1);
         }
     }
 
     public int getPrevious_direction() {
         return previous_direction;
     }
+
+    public int getBullet_offsetX() {
+        return bullet_offsetX;
+    }
+
+    public void setBullet_offsetX(int tanque_tipo) {
+        switch (tanque_tipo) {
+            case 0:
+                this.bullet_offsetX=2;
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+
+        }
+    }
+
+    public int getBullet_offsetY() {
+        return bullet_offsetY;
+    }
+
+    public void setBullet_offsetY(int tanque_tipo) {
+        switch (tanque_tipo) {
+            case 0:
+                this.bullet_offsetY=3;
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+
+        }
+    }
+
+    public int getDist() {
+        return dist;
+    }
+
+    public int getMAX_BULLETS() {
+        return MAX_BULLETS;
+    }
+    
+    
+    
+    
 
 }
