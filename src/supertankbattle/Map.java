@@ -278,86 +278,196 @@ public class Map {
         }
     }
 
-    public void draw(Graphics g) {
-        for (Block b : bloques) {
+    public synchronized void draw(Graphics g) {
+        for (Iterator<Block> it = bloques.iterator(); it.hasNext();) {
+            Block b = it.next();
             g.drawImage(b.getImage(), b.getPosx(), b.getPosy(), null);
         }
     }
 
-    public boolean willCollide(Tank tanque, int direction) {
+    public synchronized int willCollide(Tank tanque, int direction) {
+        int pos = -1;
+        Block b1 = null;
+        Block b3 = null;
+        Block b5 = null;
         switch (direction) {
             case 0:
                 if (tanque.getPosx() % 25 == 0) {
-                    for (Block b : bloques) {
-                        if (tanque.getPosx() == b.getPosx() || tanque.getPosx() + 25 == b.getPosx()) {
+                    for (Iterator<Block> it = bloques.iterator(); it.hasNext();) {
+                        Block b = it.next();
+                        if (tanque.getPosx() == b.getPosx()) {
                             if (isInBlockY(b, tanque.getPosy() - tanque.getDist())) {
-                                return true;
+                                b1 = b;
+
+                            }
+                        }
+                        if (tanque.getPosx() + 25 == b.getPosx()) {
+                            if (isInBlockY(b, tanque.getPosy() - tanque.getDist())) {
+                                b3 = b;
                             }
                         }
                     }
                 } else {
-                    for (Block b : bloques) {
-                        if ((tanque.getPosx() > b.getPosx() && tanque.getPosx() < b.getPosx() + 25) || (tanque.getPosx() + 25 > b.getPosx() && tanque.getPosx() + 25 < b.getPosx() + 25) || (tanque.getPosx() + 50 > b.getPosx() && tanque.getPosx() + 50 < b.getPosx() + 25)) {
+                    for (Iterator<Block> it = bloques.iterator(); it.hasNext();) {
+                        Block b = it.next();
+                        if ((tanque.getPosx() > b.getPosx() && tanque.getPosx() < b.getPosx() + 25)) {
                             if (isInBlockY(b, tanque.getPosy() - tanque.getDist())) {
-                                return true;
+                                b1 = b;
                             }
+                        }
+                        if (tanque.getPosx() + 25 > b.getPosx() && tanque.getPosx() + 25 < b.getPosx() + 25) {
+                            if (isInBlockY(b, tanque.getPosy() - tanque.getDist())) {
+                                b3 = b;
+                            }
+                        }
+                        if (tanque.getPosx() + 50 > b.getPosx() && tanque.getPosx() + 50 < b.getPosx() + 25) {
+                            if (isInBlockY(b, tanque.getPosy() - tanque.getDist())) {
+                                b5 = b;
+                            }
+                        }
+                    }
+                    if (b1 != null && b3 == null && b5 == null) {
+                        if (tanque.getPosx() - b1.getPosx() >= 15) {
+                            pos = b1.getPosx() + 25;
+                        }
+                    } else if (b1 == null && b3 == null && b5 != null) {
+                        if (tanque.getPosx() + 50 - b5.getPosx() <= 10) {
+                            pos = b5.getPosx() - 50;
                         }
                     }
                 }
                 break;
             case 1:
                 if (tanque.getPosx() % 25 == 0) {
-                    for (Block b : bloques) {
-                        if (tanque.getPosx() == b.getPosx() || tanque.getPosx() + 25 == b.getPosx()) {
+                    for (Iterator<Block> it = bloques.iterator(); it.hasNext();) {
+                        Block b = it.next();
+                        if (tanque.getPosx() == b.getPosx()) {
                             if (isInBlockY(b, tanque.getPosy() + 50 + tanque.getDist())) {
-                                return true;
+                                b1 = b;
+                            }
+                        }
+                        if (tanque.getPosx() + 25 == b.getPosx()) {
+                            if (isInBlockY(b, tanque.getPosy() + 50 + tanque.getDist())) {
+                                b3 = b;
                             }
                         }
                     }
                 } else {
-                    for (Block b : bloques) {
-                        if ((tanque.getPosx() > b.getPosx() && tanque.getPosx() < b.getPosx() + 25) || (tanque.getPosx() + 25 > b.getPosx() && tanque.getPosx() + 25 < b.getPosx() + 25) || (tanque.getPosx() + 50 > b.getPosx() && tanque.getPosx() + 50 < b.getPosx() + 25)) {
+                    for (Iterator<Block> it = bloques.iterator(); it.hasNext();) {
+                        Block b = it.next();
+                        if ((tanque.getPosx() > b.getPosx() && tanque.getPosx() < b.getPosx() + 25)) {
                             if (isInBlockY(b, tanque.getPosy() + 50 + tanque.getDist())) {
-                                return true;
+                                b1 = b;
                             }
                         }
+                        if (tanque.getPosx() + 25 > b.getPosx() && tanque.getPosx() + 25 < b.getPosx() + 25) {
+                            if (isInBlockY(b, tanque.getPosy() + 50 + tanque.getDist())) {
+                                b3 = b;
+                            }
+                        }
+                        if (tanque.getPosx() + 50 > b.getPosx() && tanque.getPosx() + 50 < b.getPosx() + 25) {
+                            if (isInBlockY(b, tanque.getPosy() + 50 + tanque.getDist())) {
+                                b5 = b;
+                            }
+                        }
+                    }
+                }
+                if (b1 != null && b3 == null && b5 == null) {
+                    if (tanque.getPosx() - b1.getPosx() >= 15) {
+                        pos = b1.getPosx() + 25;
+                    }
+                } else if (b1 == null && b3 == null && b5 != null) {
+                    if (tanque.getPosx() + 50 - b5.getPosx() <= 10) {
+                        pos = b5.getPosx() - 50;
                     }
                 }
                 break;
             case 2:
                 if (tanque.getPosy() % 25 == 0) {
-                    for (Block b : bloques) {
+                    for (Iterator<Block> it = bloques.iterator(); it.hasNext();) {
+                        Block b = it.next();
                         if (tanque.getPosy() == b.getPosy() || tanque.getPosy() + 25 == b.getPosy()) {
                             if (isInBlockX(b, tanque.getPosx() - tanque.getDist())) {
-                                return true;
+                                b1 = b;
+                            }
+                        }
+                        if (tanque.getPosy() + 25 == b.getPosy()) {
+                            if (isInBlockX(b, tanque.getPosx() - tanque.getDist())) {
+                                b3 = b;
                             }
                         }
                     }
                 } else {
-                    for (Block b : bloques) {
-                        if ((tanque.getPosy() > b.getPosy() && tanque.getPosy() < b.getPosy() + 25) || (tanque.getPosy() + 25 > b.getPosy() && tanque.getPosy() + 25 < b.getPosy() + 25) || (tanque.getPosy() + 50 > b.getPosy() && tanque.getPosy() + 50 < b.getPosy() + 25)) {
+                    for (Iterator<Block> it = bloques.iterator(); it.hasNext();) {
+                        Block b = it.next();
+                        if ((tanque.getPosy() > b.getPosy() && tanque.getPosy() < b.getPosy() + 25)) {
                             if (isInBlockX(b, tanque.getPosx() - tanque.getDist())) {
-                                return true;
+                                b1 = b;
                             }
+                        }
+                        if (tanque.getPosy() + 25 > b.getPosy() && tanque.getPosy() + 25 < b.getPosy() + 25) {
+                            if (isInBlockX(b, tanque.getPosx() - tanque.getDist())) {
+                                b3 = b;
+                            }
+                        }
+                        if (tanque.getPosy() + 50 > b.getPosy() && tanque.getPosy() + 50 < b.getPosy() + 25) {
+                            if (isInBlockX(b, tanque.getPosx() - tanque.getDist())) {
+                                b5 = b;
+                            }
+                        }
+                    }
+                    if (b1 != null && b3 == null && b5 == null) {
+                        if (tanque.getPosy() - b1.getPosy() >= 15) {
+                            pos = b1.getPosy() + 25;
+                        }
+                    } else if (b1 == null && b3 == null && b5 != null) {
+                        if (tanque.getPosy()+50 - b5.getPosy() <= 10) {
+                            pos = b5.getPosy() - 50;
                         }
                     }
                 }
                 break;
             case 3:
                 if (tanque.getPosy() % 25 == 0) {
-                    for (Block b : bloques) {
+                    for (Iterator<Block> it = bloques.iterator(); it.hasNext();) {
+                        Block b = it.next();
                         if (tanque.getPosy() == b.getPosy() || tanque.getPosy() + 25 == b.getPosy()) {
                             if (isInBlockX(b, tanque.getPosx() + 50 + tanque.getDist())) {
-                                return true;
+                                b1 = b;
+                            }
+                        }
+                        if (tanque.getPosy() + 25 == b.getPosy()) {
+                            if (isInBlockX(b, tanque.getPosx() + 50 + tanque.getDist())) {
+                                b3 = b;
                             }
                         }
                     }
                 } else {
-                    for (Block b : bloques) {
-                        if ((tanque.getPosy() > b.getPosy() && tanque.getPosy() < b.getPosy() + 25) || (tanque.getPosy() + 25 > b.getPosy() && tanque.getPosy() + 25 < b.getPosy() + 25) || (tanque.getPosy() + 50 > b.getPosy() && tanque.getPosy() + 50 < b.getPosy() + 25)) {
+                    for (Iterator<Block> it = bloques.iterator(); it.hasNext();) {
+                        Block b = it.next();
+                        if ((tanque.getPosy() > b.getPosy() && tanque.getPosy() < b.getPosy() + 25)) {
                             if (isInBlockX(b, tanque.getPosx() + 50 + tanque.getDist())) {
-                                return true;
+                                b1 = b;
                             }
+                        }
+                        if (tanque.getPosy() + 25 > b.getPosy() && tanque.getPosy() + 25 < b.getPosy() + 25) {
+                            if (isInBlockX(b, tanque.getPosx() + 50 + tanque.getDist())) {
+                                b3 = b;
+                            }
+                        }
+                        if (tanque.getPosy() + 50 > b.getPosy() && tanque.getPosy() + 50 < b.getPosy() + 25) {
+                            if (isInBlockX(b, tanque.getPosx() + 50 + tanque.getDist())) {
+                                b5 = b;
+                            }
+                        }
+                    }
+                    if (b1 != null && b3 == null && b5 == null) {
+                        if (tanque.getPosy() - b1.getPosy() >= 15) {
+                            pos = b1.getPosy() + 25;
+                        }
+                    } else if (b1 == null && b3 == null && b5 != null) {
+                        if (tanque.getPosy()+50 - b5.getPosy() <= 10) {
+                            pos = b5.getPosy() - 50;
                         }
                     }
                 }
@@ -365,68 +475,76 @@ public class Map {
             default:
                 break;
         }
-        return false;
+        if (pos == -1 && b1 == null && b3 == null && b5 == null) {
+            pos = -2;
+        }
+        return pos;
     }
 
-    public synchronized boolean willColide(Bullet bala, int direction) {
+    public synchronized int willColide(Bullet bala, int direction) {
+        int cont = 0;
         switch (direction) {
             case 0:
-        for (Iterator<Block> it = bloques.iterator(); it.hasNext();) {
-            Block b = it.next();
-            if (bala.getPosx() >= b.getPosx() && bala.getPosx() <= b.getPosx() + 25) {
-                if (isInBlockYB(b, bala.getPosy() - bala.getDist())) {
-                    if (b.getTipo() == 0) {
-                        it.remove();
+                for (Iterator<Block> it = bloques.iterator(); it.hasNext();) {
+                    Block b = it.next();
+                    if ((bala.getPosx() >= b.getPosx() && bala.getPosx() <= b.getPosx() + 25) || (bala.getPosx() + bala.getRADIUS() - 5 >= b.getPosx() && bala.getPosx() + bala.getRADIUS() - 5 <= b.getPosx() + 25)) {
+                        if (isInBlockYB(b, bala.getPosy() - bala.getDist())) {
+                            if (b.getTipo() == 0) {
+                                it.remove();
+
+                            }
+                            cont += 1;
+                        }
                     }
-                    return true;
                 }
-            }
-        }
 
                 break;
             case 1:
-        for (Iterator<Block> it = bloques.iterator(); it.hasNext();) {
-            Block b = it.next();
-            if (bala.getPosx() >= b.getPosx() && bala.getPosx() <= b.getPosx() + 25) {
-                if (isInBlockYB(b, bala.getPosy() + bala.getRADIUS() + bala.getDist())) {
-                    if (b.getTipo() == 0) {
-                        it.remove();
+                for (Iterator<Block> it = bloques.iterator(); it.hasNext();) {
+                    Block b = it.next();
+                    if ((bala.getPosx() >= b.getPosx() && bala.getPosx() <= b.getPosx() + 25) || (bala.getPosx() + bala.getRADIUS() - 5 >= b.getPosx() && bala.getPosx() + bala.getRADIUS() - 5 <= b.getPosx() + 25)) {
+                        if (isInBlockYB(b, bala.getPosy() + bala.getRADIUS() + bala.getDist())) {
+                            if (b.getTipo() == 0) {
+                                it.remove();
+
+                            }
+                            cont += 1;
+                        }
                     }
-                    return true;
                 }
-            }
-        }
                 break;
             case 2:
-        for (Iterator<Block> it = bloques.iterator(); it.hasNext();) {
-            Block b = it.next();
-            if (bala.getPosy() >= b.getPosy() && bala.getPosy() <= b.getPosy() + 25) {
-                if (isInBlockXB(b, bala.getPosx() - bala.getDist())) {
-                    if (b.getTipo() == 0) {
-                        it.remove();
+                for (Iterator<Block> it = bloques.iterator(); it.hasNext();) {
+                    Block b = it.next();
+                    if ((bala.getPosy() >= b.getPosy() && bala.getPosy() <= b.getPosy() + 25) || (bala.getPosy() + bala.getRADIUS() - 5 >= b.getPosy() && bala.getPosy() + bala.getRADIUS() - 5 <= b.getPosy() + 25)) {
+                        if (isInBlockXB(b, bala.getPosx() - bala.getDist())) {
+                            if (b.getTipo() == 0) {
+                                it.remove();
+
+                            }
+                            cont += 1;
+                        }
                     }
-                    return true;
                 }
-            }
-        }
                 break;
             case 3:
-        for (Iterator<Block> it = bloques.iterator(); it.hasNext();) {
-            Block b = it.next();
-            if (bala.getPosy() + bala.getRADIUS() - 5 >= b.getPosy() && bala.getPosy() + bala.getRADIUS() - 5 <= b.getPosy() + 25) {
-                if (isInBlockXB(b, bala.getPosx() + bala.getRADIUS() - 5 + bala.getDist())) {
-                    if (b.getTipo() == 0) {
-                        it.remove();
+                for (Iterator<Block> it = bloques.iterator(); it.hasNext();) {
+                    Block b = it.next();
+                    if ((bala.getPosy() >= b.getPosy() && bala.getPosy() <= b.getPosy() + 25) || (bala.getPosy() + bala.getRADIUS() - 5 >= b.getPosy() && bala.getPosy() + bala.getRADIUS() - 5 <= b.getPosy() + 25)) {
+                        if (isInBlockXB(b, bala.getPosx() + bala.getRADIUS() - 5 + bala.getDist())) {
+                            if (b.getTipo() == 0) {
+                                it.remove();
+
+                            }
+                            cont += 1;
+                        }
                     }
-                    return true;
                 }
-            }
-        }
                 break;
             default:
                 break;
         }
-        return false;
+        return cont;
     }
 
     private boolean isInBlockX(Block b, int posx) {
@@ -438,7 +556,7 @@ public class Map {
         return posy > b.getPosy() && posy < b.getPosy() + 25;
 
     }
-    
+
     private boolean isInBlockXB(Block b, int posx) {
         return posx >= b.getPosx() && posx <= b.getPosx() + 25;
 

@@ -19,7 +19,7 @@ public class Bullet {
     private int disty;
     public boolean traveling;
     private final Color color = Color.YELLOW;
-    private final int dist = 3;
+    private final int dist = 1;
     private int bound;
 
     //Constructor
